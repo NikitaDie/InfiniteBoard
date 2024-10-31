@@ -37,8 +37,8 @@ const InfiniteDotBoard = () => {
         // viewport.addChild(tilingSprite);
         const tilingSprite = new PIXI.TilingSprite(
             texture,
-           2000,
-            2000
+           20000,
+            20000
         );
         app.stage.addChild(tilingSprite);
 
