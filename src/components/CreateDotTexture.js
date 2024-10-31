@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js';
 
-const createDotTexture = (dotSize = 4, dotSpacing = 20, chunkSize = 1000) => {
+const createDotTexture = (app, dotSize = 1, dotSpacing = 20, chunkSize = 1000) => {
     const dotGraphics = new PIXI.Graphics();
 
     for (let x = 0; x < chunkSize; x += dotSpacing) {
@@ -11,10 +11,7 @@ const createDotTexture = (dotSize = 4, dotSpacing = 20, chunkSize = 1000) => {
         }
     }
 
-    const renderTexture = PIXI.RenderTexture.create({ width: chunkSize, height: chunkSize });
-    PIXI.Renderer.shared.render(dotGraphics, renderTexture);
-
-    return renderTexture;
+    return app.renderer.generateTexture(dotGraphics, PIXI.SCALE_MODES.NEAREST, 1);
 };
 
 export default createDotTexture;
