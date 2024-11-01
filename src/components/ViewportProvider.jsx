@@ -31,8 +31,14 @@ export const ViewportProvider = ({ children, width, height  }) => {
         viewportRef.current
             .drag()
             .pinch()
-            .wheel();
-        //.decelerate();
+            .wheel({
+                percent: 0.05,
+                wheelZoom: true
+            })
+            .clampZoom({
+                maxScale: CONFIG.viewportMaxScale,
+                minScale: CONFIG.viewportMinScale
+            });
 
         // Cleanup on unmount
         return () => {
