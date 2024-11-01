@@ -12,17 +12,14 @@ const InfiniteDotBoard = () => {
     useEffect(() => {
         if (!viewport) return;
 
-        let currentScale = viewport.scale.x;
-
         // TODO: check if screen size is changed
         const chunkSize = Math.min(viewport.screenHeight, viewport.screenWidth);
 
+        // Calculating unitSize so that CONFIG.dotsInChunkCount dots can be printed
         const unitSize = Math.floor(chunkSize / CONFIG.dotsInChunkCount);
 
-        const dotSize = unitSize * CONFIG.dotSizeRatio;
-
         // Create and add dot texture
-        const texture = createDotTexture(app, dotSize, unitSize);
+        const texture = createDotTexture(app, unitSize * CONFIG.dotSizeRatio, unitSize);
         const tilingSprite = new PIXI.TilingSprite(
             texture,
             viewport.worldWidth,
@@ -30,55 +27,50 @@ const InfiniteDotBoard = () => {
         );
         viewport.addChild(tilingSprite);
 
-        const minRatio = 0.01;
-
-        const zoomInThreshold = 0.2;
-        const zoomOutThreshold = 0.08;
-
         const texturePool = new Map();
+
+        let actualUnitSize = unitSize;
 
         viewport.on('zoomed', () => {
             if (viewport.scale.x > CONFIG.viewportMaxScale) viewport.scale.set(CONFIG.viewportMaxScale);
             else if (viewport.scale.x < CONFIG.viewportMinScale) viewport.scale.set(CONFIG.viewportMinScale);
 
-            const newScale = viewport.scale.x; // Assuming uniform scaling
+            // Assuming uniform scaling
+            const scale = viewport.scale.x;
 
-            const zoomThreshold = newScale >= currentScale ? zoomInThreshold : zoomOutThreshold;
+            // Calculating count of dots that can be currently printed on screen
+            const dotsCount = chunkSize / scale / actualUnitSize;
 
-            if (Math.abs(newScale - currentScale) >= zoomThreshold) {
+            // Checking if there are too many or too little dots on the screen, as a reason for rerender
+            if ((dotsCount >= CONFIG.maximalDotsCount && scale !== CONFIG.viewportMinScale)
+                || (dotsCount <= CONFIG.minimalDotsCount && scale !== CONFIG.viewportMaxScale)) {
 
-                let key = Math.floor(newScale / minRatio);
+                const key = Math.floor(scale / CONFIG.texturePoolRatio);
+
+                actualUnitSize = Math.floor(unitSize / scale);
 
                 let newTexture;
 
                 if (texturePool.has(key)) {
+                    // Getting already created Texture from Pool
                     newTexture = texturePool.get(key);
-                } else {
-                    // Update texture based on new scale
-                    const actualUnitSize = Math.floor(unitSize / newScale);
-
+                }
+                else {
                     // dotSize has maximum one digit after point
-                    let dotSize = Math.round(actualUnitSize * CONFIG.dotSizeRatio * 10) / 10;
-
-                    console.log(newScale);
+                    const dotSize = Math.round(actualUnitSize * CONFIG.dotSizeRatio * 10) / 10;
 
                     newTexture = createDotTexture(app, dotSize, actualUnitSize);
 
+                    // Adding texture to Pool
                     texturePool.set(key, newTexture);
                 }
 
-
                 tilingSprite.texture = newTexture;
-
-                // Update the current scale
-                currentScale = newScale;
             }
         });
 
         // Cleanup on unmount
         return () => {
-            //viewport.destroy();
-
             if (viewport)
                 viewport.removeChild(tilingSprite);
 
