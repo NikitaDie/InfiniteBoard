@@ -6,7 +6,7 @@ const createDotTexture = (app, dotSize = 2, unitSize = 30) => {
 
     // Color of the dots
     dotGraphics.beginFill(CONFIG.backgroundDotsColor);
-    dotGraphics.drawRect(0, 0, dotSize, dotSize);
+    dotGraphics.drawCircle(unitSize / 2, unitSize / 2, dotSize);
     dotGraphics.endFill();
 
     return app.renderer.generateTexture(dotGraphics, {
