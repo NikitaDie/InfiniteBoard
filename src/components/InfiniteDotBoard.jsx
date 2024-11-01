@@ -1,29 +1,15 @@
-import React, { useEffect } from 'react';
-import { Viewport } from 'pixi-viewport';
-import createDotTexture from './createDotTexture';
-import { useApp } from '@pixi/react';
+import { useEffect } from 'react';
 import * as PIXI from 'pixi.js';
+import createDotTexture from '../utils/CreateDotTexture.js';
+import { useApp } from '@pixi/react';
+import { useViewport } from '../hooks/useViewport.js';
 
 const InfiniteDotBoard = () => {
     const app = useApp();
+    const viewport = useViewport();
 
     useEffect(() => {
-
-        const viewport = new Viewport({
-            screenWidth: window.innerWidth,
-            screenHeight: window.innerHeight,
-            worldWidth: 200000,
-            worldHeight: 200000,
-            events: app.renderer.events
-        });
-
-        app.stage.addChild(viewport);
-
-        viewport
-            .drag()
-            .pinch()
-            .wheel();
-            //.decelerate();
+        if (!viewport) return;
 
         // Create and add dot texture
         const texture = createDotTexture(app);
@@ -36,10 +22,10 @@ const InfiniteDotBoard = () => {
 
         // Cleanup on unmount
         return () => {
-            app.stage.removeChild(viewport);
-            viewport.destroy();
+            viewport.removeChild(tilingSprite);
+            tilingSprite.destroy();
         };
-    }, [app]);
+    }, [app, viewport]);
 
     return null;
 };
