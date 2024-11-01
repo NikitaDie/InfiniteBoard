@@ -1,29 +1,20 @@
 import * as PIXI from 'pixi.js';
+import CONFIG from "../config.js";
 
-const createDotTexture = (app, dotSize = 2, dotSpacing = 13, chunkApproximateSize = 1000) => {
-    const unitSize = dotSize + dotSpacing; //○-dot, □-spacing = a single unit from which texture is formed
-    const unitCount = Math.floor(chunkApproximateSize / unitSize);
-    const chunkSize = unitSize * unitCount;
-
+const createDotTexture = (app, dotSize = 2, dotSpacing = 30) => {
     const dotGraphics = new PIXI.Graphics();
 
-    dotGraphics.beginFill(0xC4C4C4); // Color of the dots
-
-    for (let x = 0; x <= chunkSize; x += unitSize) {
-        for (let y = 0; y <= chunkSize; y += unitSize) {
-            dotGraphics.drawCircle(x, y, dotSize);
-        }
-    }
-
+    // Color of the dots
+    dotGraphics.beginFill(CONFIG.backgroundDotsColor);
+    dotGraphics.drawRect(0, 0, dotSize, dotSize);
     dotGraphics.endFill();
 
-    const texture = app.renderer.generateTexture(dotGraphics, {
-        region: new PIXI.Rectangle(0, 0, chunkSize, chunkSize), // Region to render
-        resolution: 2,
-        multisample: 8
+    return app.renderer.generateTexture(dotGraphics, {
+        region: new PIXI.Rectangle(0, 0, dotSpacing, dotSpacing),
+        resolution: 8,
+        multisample: 16,
+        scaleMode: PIXI.SCALE_MODES.NEAREST,
     });
-    console.log('Generated Texture:', texture);
-    return texture;
 };
 
 export default createDotTexture;
