@@ -8,7 +8,7 @@ const App = () => {
     const bytesToMB = (bytes) => (bytes / 1024 / 1024).toFixed(2);
 
     return (
-        <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
+        <div style={{ width: '100vw', height: '100vh', position: 'relative', overflow: 'hidden' }}>
             <PixiCanvas
                 width={window.innerWidth}
                 height={window.innerHeight}
