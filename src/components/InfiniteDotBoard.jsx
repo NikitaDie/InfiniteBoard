@@ -17,13 +17,12 @@ const InfiniteDotBoard = () => {
         // TODO: check if screen size is changed
         const chunkSize = Math.min(viewport.screenHeight, viewport.screenWidth);
 
-        const unitSize = Math.floor(chunkSize / 100);
+        const unitSize = Math.floor(chunkSize / CONFIG.dotsInChunkCount);
 
         const dotSize = unitSize * CONFIG.dotSizeRatio;
-        const dotSpacing = unitSize * CONFIG.dotSpacingRatio;
 
         // Create and add dot texture
-        const texture = createDotTexture(app, dotSize, dotSpacing);
+        const texture = createDotTexture(app, dotSize, unitSize);
         const tilingSprite = new PIXI.TilingSprite(
             texture,
             viewport.worldWidth,
@@ -31,10 +30,10 @@ const InfiniteDotBoard = () => {
         );
         viewport.addChild(tilingSprite);
 
-        const minRatio = 0.05;
+        const minRatio = 0.01;
 
         const zoomInThreshold = 0.2;
-        const zoomOutThreshold = 0.25;
+        const zoomOutThreshold = 0.08;
 
         const texturePool = new Map();
 
@@ -56,16 +55,14 @@ const InfiniteDotBoard = () => {
                     newTexture = texturePool.get(key);
                 } else {
                     // Update texture based on new scale
-                    let newChunkSize = chunkSize / newScale;
-
-                    let unitSize = Math.floor(newChunkSize / 100);
+                    const actualUnitSize = Math.floor(unitSize / newScale);
 
                     // dotSize has maximum one digit after point
-                    let dotSize = Math.round(unitSize * CONFIG.dotSizeRatio * 10) / 10;
+                    let dotSize = Math.round(actualUnitSize * CONFIG.dotSizeRatio * 10) / 10;
 
                     console.log(newScale);
 
-                    newTexture = createDotTexture(app, dotSize, unitSize * CONFIG.dotSpacingRatio);
+                    newTexture = createDotTexture(app, dotSize, actualUnitSize);
 
                     texturePool.set(key, newTexture);
                 }
