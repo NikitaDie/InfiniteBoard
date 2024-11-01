@@ -7,7 +7,7 @@ const createDotTexture = (app, dotSize = 2, dotSpacing = 13, chunkApproximateSiz
 
     const dotGraphics = new PIXI.Graphics();
 
-    dotGraphics.beginFill(0xFFFFFF); // Color of the dots
+    dotGraphics.beginFill(0xC4C4C4); // Color of the dots
 
     for (let x = 0; x <= chunkSize; x += unitSize) {
         for (let y = 0; y <= chunkSize; y += unitSize) {
