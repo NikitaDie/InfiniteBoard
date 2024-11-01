@@ -5,6 +5,7 @@ import { useApp } from '@pixi/react';
 import PropTypes from "prop-types";
 import { ViewportContext } from '../hooks/useViewport.js';
 import CONFIG from "../config.js";
+import viewport from "../config.js";
 
 export const ViewportProvider = ({ children, width, height  }) => {
     const app = useApp();
@@ -21,7 +22,10 @@ export const ViewportProvider = ({ children, width, height  }) => {
             worldHeight: CONFIG.worldHeight,
             events: app.renderer.events
         });
-        console.log(viewportRef.current);
+
+        viewportRef.current.setZoom(1);
+        viewportRef.current.moveCenter(viewport.worldWidth / 2, viewport.worldHeight / 2);
+
         app.stage.addChild(viewportRef.current);
 
         viewportRef.current
