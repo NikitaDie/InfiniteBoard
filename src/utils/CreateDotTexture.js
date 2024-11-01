@@ -11,8 +11,8 @@ const createDotTexture = (app, dotSize = 2, unitSize = 30) => {
 
     return app.renderer.generateTexture(dotGraphics, {
         region: new PIXI.Rectangle(0, 0, unitSize, unitSize),
-        resolution: 8,
-        multisample: 16,
+        resolution: 128,
+        multisample: 128,
         scaleMode: PIXI.SCALE_MODES.NEAREST,
     });
 };
